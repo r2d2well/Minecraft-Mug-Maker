@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "mug_maker:block/mixer" }
+  }
+}
