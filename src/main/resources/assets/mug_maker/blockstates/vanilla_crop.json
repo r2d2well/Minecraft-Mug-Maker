@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "age=0": { "model": "mug_maker:block/vanilla_stage0" },
+        "age=1": { "model": "mug_maker:block/vanilla_stage1" },
+        "age=2": { "model": "mug_maker:block/vanilla_stage2" },
+        "age=3": { "model": "mug_maker:block/vanilla_stage3" }
+    }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "food",
+  "ingredients": [
+    {
+      "item": "mug_maker:vanilla"
+    },
+    {
+      "item": "minecraft:water_bucket"
+    },
+    {
+        "item": "minecraft:golden_carrot"
+    }
+  ],
+  "result": {
+    "item": "mug_maker:mug"
+  }
+}

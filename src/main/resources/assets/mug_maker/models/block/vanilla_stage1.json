@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/crop",
+  "textures": {
+    "crop": "mug_maker:block/vanilla_stage1"
+  }
+}

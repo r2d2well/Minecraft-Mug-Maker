@@ -11,13 +11,13 @@ import net.r2d2well.mugmakermod.MugMakerMod;
 
 import static net.r2d2well.mugmakermod.CreativeTab.addToTabBlock;
 
-public class ModBlocks {
+public class ModBlocksInit {
     public static final DeferredRegister<Block> BLOCK = DeferredRegister.create(ForgeRegistries.BLOCKS, MugMakerMod.MOD_ID);
 
-    public static void register(IEventBus eventBus){ BLOCK.register(eventBus); }
-
-    public static final RegistryObject <Block> MIXER = addToTabBlock(BLOCK.register("mixer",
-            () -> new Block(BlockBehaviour.Properties.of().instabreak()
+    public static final RegistryObject <Mixer> MIXER = addToTabBlock(BLOCK.register("mixer",
+            () -> new Mixer(BlockBehaviour.Properties.of().ignitedByLava()
             )));
 
+    public static final RegistryObject <VanillaCropBlock> VANILLA_CROP = BLOCK.register("vanilla_crop",
+            () -> new VanillaCropBlock(BlockBehaviour.Properties.copy(Blocks.WHEAT)));
 }
