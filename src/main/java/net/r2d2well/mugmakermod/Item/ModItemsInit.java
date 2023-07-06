@@ -3,10 +3,7 @@ package net.r2d2well.mugmakermod.Item;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemNameBlockItem;
-import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -28,30 +25,34 @@ public class ModItemsInit {
 
     public static final RegistryObject <Item> A_W = addToTab(ITEMS.register("a_w", () ->
             new Item(new Item.Properties()
-                    .stacksTo(16).
-                    food(new FoodProperties.Builder()
+                    .food(new FoodProperties.Builder()
                             .nutrition(8)
                             .build()))));
 
     public static final RegistryObject <Item> MUG = addToTab(ITEMS.register("mug", () ->
             new Item(new Item.Properties()
-                    .stacksTo(16)
                     .food(new FoodProperties.Builder()
                             .nutrition(8)
                             .build()))));
 
     public static final RegistryObject <Item> IBC = addToTab(ITEMS.register("ibc", () ->
             new Item(new Item.Properties()
-                    .stacksTo(16)
                     .food(new FoodProperties.Builder()
                             .nutrition(8)
                             .build()))));
 
     public static final RegistryObject <Item> BARQ = addToTab(ITEMS.register("barq", () ->
             new Item(new Item.Properties()
-                    .stacksTo(16)
                     .food(new FoodProperties.Builder()
                             .nutrition(8)
+                            .build()))));
+
+    public static final RegistryObject <Item> CARBONATED_WATER = addToTab(ITEMS.register("carbonated_water", () ->
+            new Item(new Item.Properties()
+                    .stacksTo(16)
+                    .food(new FoodProperties.Builder()
+                            .nutrition(2)
+                            .effect(new MobEffectInstance(MobEffects.CONFUSION), 600)
                             .build()))));
 
     public static final RegistryObject <BlockItem> MIXER = addToTab(ITEMS.register("mixer", () ->

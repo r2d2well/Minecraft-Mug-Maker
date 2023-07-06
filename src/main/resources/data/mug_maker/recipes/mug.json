@@ -6,7 +6,10 @@
       "item": "mug_maker:vanilla"
     },
     {
-      "item": "minecraft:water_bucket"
+      "item": "mug_maker:carbonated_water"
+    },
+    {
+       "item": "minecraft:sugar"
     },
     {
         "item": "minecraft:golden_carrot"

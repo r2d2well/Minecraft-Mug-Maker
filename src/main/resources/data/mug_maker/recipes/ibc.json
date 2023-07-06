@@ -6,10 +6,13 @@
       "item": "mug_maker:vanilla"
     },
     {
-      "item": "minecraft:water_bucket"
+      "item": "mug_maker:carbonated_water"
     },
     {
-      "item": "minecraft:fermented_spider_eye"
+       "item": "minecraft:sugar"
+    },
+    {
+        "item": "minecraft:fermented_spider_eye"
     }
   ],
   "result": {
