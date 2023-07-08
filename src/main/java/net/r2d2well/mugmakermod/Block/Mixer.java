@@ -39,7 +39,7 @@ public class Mixer extends Block implements EntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return level.isClientSide() ? null: ($0, pos, $1, blockEntity) -> {
             if (blockEntity instanceof MixerEntity mixer){
-                mixer.tick(mixer);
+                mixer.tick(level, pos, state, mixer);
             }
         };
     }
@@ -65,9 +65,8 @@ public class Mixer extends Block implements EntityBlock {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pPos);
             if(entity instanceof MixerEntity) {
-                NetworkHooks.openScreen(((ServerPlayer)pPlayer), (MixerEntity)entity, pPos);
-            }
-            else {
+                NetworkHooks.openScreen(((ServerPlayer)pPlayer), (MixerEntity) entity, pPos);
+            } else {
                 throw new IllegalStateException("Our Container provider is missing!");
             }
         }

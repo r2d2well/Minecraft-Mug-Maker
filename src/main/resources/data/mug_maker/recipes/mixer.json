@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "#": {
+      "tag": "minecraft:planks"
+    },
+    "X": {
+       "item": "minecraft:iron_ingot"
+    },
+    "T": {
+       "item": "minecraft:hopper"
+    }
+  },
+  "pattern": [
+    "###",
+    "XXX",
+    "#T#"
+  ],
+  "result": {
+    "item": "mug_maker:mixer"
+  }
+}

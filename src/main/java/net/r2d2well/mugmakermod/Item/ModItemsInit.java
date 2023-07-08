@@ -12,8 +12,6 @@ import net.minecraftforge.registries.RegistryObject;
 import net.r2d2well.mugmakermod.Block.ModBlocksInit;
 import net.r2d2well.mugmakermod.MugMakerMod;
 
-import static net.minecraftforge.registries.ForgeRegistries.ENCHANTMENTS;
-import static net.minecraftforge.registries.ForgeRegistries.POTIONS;
 import static net.r2d2well.mugmakermod.CreativeTab.addToTab;
 
 public class ModItemsInit {

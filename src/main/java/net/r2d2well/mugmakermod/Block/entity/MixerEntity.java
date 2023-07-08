@@ -10,87 +10,105 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemStackHandler;
-import net.r2d2well.mugmakermod.Block.Mixer;
 import net.r2d2well.mugmakermod.Item.ModItemsInit;
 import net.r2d2well.mugmakermod.Screen.MixerMenu;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 
 public class MixerEntity extends BlockEntity implements MenuProvider {
-    private final ItemStackHandler itemStackHandler = new ItemStackHandler(3){
+    public final ItemStackHandler itemStackHandler = new ItemStackHandler(5){
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
         }
     };
-    /*
-    protected final ContainerData data;
-    private int progress;
-    private int MaxProgress = 100;
-    */
+    public int progress;
+    public final int maxProgress = 5;
+
     private LazyOptional<BasicComboBoxUI.ItemHandler> lazyItemHandler = LazyOptional.empty();
 
-    public MixerEntity(BlockPos pos, BlockState state){
-        super (BlockEntityInit.MIXER.get(), pos, state);
+    public MixerEntity(BlockPos pos, BlockState state) {
+        super(BlockEntityInit.MIXER.get(), pos, state);
     }
 
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        return new MixerMenu(id, inventory, this);
-    }
-
-    public void tick(MixerEntity pEntity){
-
-        /*
-        progress++;
-        if (progress >= MaxProgress){
-            progress = 0;
-            Pig pig = new Pig(EntityType.PIG, this.level);
-            pig.setPos(this.worldPosition.getX(), this.worldPosition.getY() + 1, this.worldPosition.getZ());
-            this.level.addFreshEntity(pig);
+    public void tick(Level level, BlockPos pos, BlockState state, MixerEntity pEntity) {
+        if(level.isClientSide()) {
+            return;
         }
-        */
-        if (hasRecipe(pEntity)){
-            craftItem(pEntity);
+
+        if(hasRecipe(pEntity)) {
+            pEntity.progress++;
+            setChanged(level, pos, state);
+
+            if(pEntity.progress >= pEntity.maxProgress) {
+                craftItem(pEntity);
+                pEntity.resetProgress();
+            }
+        }
+        else {
+            pEntity.resetProgress();
+            setChanged(level, pos, state);
         }
     }
 
-    private void craftItem(MixerEntity entity){
-        if (hasRecipe(entity)){
-            entity.itemStackHandler.extractItem(1,1,false);
-            entity.itemStackHandler.setStackInSlot(2, new ItemStack(ModItemsInit.MUG.get(),
-                    entity.itemStackHandler.getStackInSlot(2).getCount() + 1));
+    private void resetProgress() {
+        this.progress = 0;
+    }
+
+    private static void craftItem(MixerEntity entity) {
+        if (hasWheatInSlot(entity)){
+            craftCarbonatedWater(entity);
         }
     }
 
-    private boolean hasRecipe(MixerEntity entity){
+    private static boolean hasRecipe(MixerEntity entity) {
         SimpleContainer inventory = new SimpleContainer(entity.itemStackHandler.getSlots());
         for (int i = 0; i < entity.itemStackHandler.getSlots(); i++) {
             inventory.setItem(i, entity.itemStackHandler.getStackInSlot(i));
         }
 
-        boolean hasRawGemInFirstSlot = entity.itemStackHandler.getStackInSlot(1).getItem() == Items.COAL;
+        Item item = ModItemsInit.CARBONATED_WATER.get();
 
-        return hasRawGemInFirstSlot && canInsertAmountIntoOutputSlot(inventory) &&
-                canInsertItemIntoOutputSlot(inventory, new ItemStack(Items.COAL, 1));
+        return hasWheatInSlot(entity) && canInsertAmountIntoOutputSlot(inventory) &&
+                canInsertItemIntoOutputSlot(inventory, new ItemStack(item, 1));
+    }
+
+    private static boolean hasWheatInSlot(MixerEntity entity){
+        for (int x = 0; x < 4; x++){
+            if (entity.itemStackHandler.getStackInSlot(x).getItem() == Items.WHEAT){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void craftCarbonatedWater(MixerEntity entity){
+        for (int x = 0; x < 4; x++){
+            if (entity.itemStackHandler.getStackInSlot(x).getItem() == Items.WHEAT){
+                entity.itemStackHandler.extractItem(x,1, false);
+                entity.itemStackHandler.setStackInSlot(4, new ItemStack(ModItemsInit.CARBONATED_WATER.get(),
+                        entity.itemStackHandler.getStackInSlot(4).getCount() + 1));
+                return;
+            }
+        }
     }
 
     private static boolean canInsertItemIntoOutputSlot(SimpleContainer inventory, ItemStack stack) {
-        return inventory.getItem(2).getItem() == stack.getItem() || inventory.getItem(2).isEmpty();
+        return inventory.getItem(4).getItem() == stack.getItem() || inventory.getItem(4).isEmpty();
     }
 
     private static boolean canInsertAmountIntoOutputSlot(SimpleContainer inventory) {
-        return inventory.getItem(2).getMaxStackSize() > inventory.getItem(2).getCount();
+        return inventory.getItem(4).getMaxStackSize() > inventory.getItem(4).getCount();
     }
 
     @Override
@@ -105,13 +123,6 @@ public class MixerEntity extends BlockEntity implements MenuProvider {
         }
         return super.getCapability(cap, side);
     }
-
-    /*
-    public void onLoad(){
-        super.onLoad();
-        lazyItemHandler = LazyOptional.of(() -> itemStackHandler);
-    }
-    */
 
     protected void saveAdditional(CompoundTag nbt){
         nbt.put("inventory", itemStackHandler.serializeNBT());
@@ -135,5 +146,11 @@ public class MixerEntity extends BlockEntity implements MenuProvider {
         }
 
         Containers.dropContents(this.level, this.worldPosition, inventory);
+    }
+
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+        return new MixerMenu(id, inventory, this);
     }
 }

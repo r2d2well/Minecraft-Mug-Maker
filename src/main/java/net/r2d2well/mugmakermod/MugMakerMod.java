@@ -41,7 +41,7 @@ public class MugMakerMod
 
         CreativeTab.TABS.register(modEventBus);
 
-        ModMenuTypes.register(modEventBus);
+        ModMenuTypes.MENUS.register(modEventBus);
 
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
@@ -71,5 +71,6 @@ public class MugMakerMod
             ItemBlockRenderTypes.setRenderLayer(ModBlocksInit.VANILLA_CROP.get(), RenderType.cutout());
             MenuScreens.register(ModMenuTypes.MIXER_MENU.get(), MixerScreen::new);
         }
+
     }
 }

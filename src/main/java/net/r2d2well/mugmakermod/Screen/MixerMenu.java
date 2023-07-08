@@ -1,6 +1,7 @@
 package net.r2d2well.mugmakermod.Screen;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
@@ -12,10 +13,11 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.SlotItemHandler;
 import net.r2d2well.mugmakermod.Block.ModBlocksInit;
 import net.r2d2well.mugmakermod.Block.entity.MixerEntity;
+import net.r2d2well.mugmakermod.Screen.slots.CustomSlot;
 import org.jetbrains.annotations.Nullable;
 
 public class MixerMenu extends AbstractContainerMenu {
-    public final MixerEntity blockEntity;
+    public MixerEntity blockEntity;
     private final Level level;
 
     public MixerMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
@@ -24,18 +26,18 @@ public class MixerMenu extends AbstractContainerMenu {
 
     public MixerMenu(int id, Inventory inv, BlockEntity entity) {
         super(ModMenuTypes.MIXER_MENU.get(), id);
-        checkContainerSize(inv, 3);
-        blockEntity = (MixerEntity) entity;
+        checkContainerSize(inv, 5);
         this.level = inv.player.level();
+        blockEntity = (MixerEntity) entity;
+
+        this.addSlot(new SlotItemHandler(blockEntity.itemStackHandler, 0, 8, 15));
+        this.addSlot(new SlotItemHandler(blockEntity.itemStackHandler, 1, 59, 15));
+        this.addSlot(new SlotItemHandler(blockEntity.itemStackHandler, 2, 109, 15));
+        this.addSlot(new SlotItemHandler(blockEntity.itemStackHandler, 3, 152, 15));
+        this.addSlot(new CustomSlot(blockEntity.itemStackHandler, 4, 86, 60));
 
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
-
-        this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
-            this.addSlot(new SlotItemHandler(handler, 0, 12, 15));
-            this.addSlot(new SlotItemHandler(handler, 1, 86, 15));
-            this.addSlot(new SlotItemHandler(handler, 2, 86, 60));
-        });
     }
 
     @Override
@@ -57,6 +59,7 @@ public class MixerMenu extends AbstractContainerMenu {
         }
     }
 
+
     // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
     // must assign a slot number to each of the slots used by the GUI.
     // For this container, we can see both the tile inventory's slots as well as the player inventory slots and the hotbar.
@@ -73,7 +76,8 @@ public class MixerMenu extends AbstractContainerMenu {
     private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
 
     // THIS YOU HAVE TO DEFINE!
-    private static final int TE_INVENTORY_SLOT_COUNT = 3;  // must be the number of slots you have!
+    private static final int TE_INVENTORY_SLOT_COUNT = 5;  // must be the number of slots you have!
+
 
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {

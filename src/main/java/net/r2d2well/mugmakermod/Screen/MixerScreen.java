@@ -29,7 +29,7 @@ public class MixerScreen extends AbstractContainerScreen<MixerMenu> {
         int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        //stack.blit(, x, y, 0, 0, imageWidth, imageHeight);
+        stack.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
     }
 
     @Override
@@ -37,4 +37,5 @@ public class MixerScreen extends AbstractContainerScreen<MixerMenu> {
         renderBackground(stack);
         super.render(stack, mouseX, mouseY, delta);
         renderTooltip(stack, mouseX, mouseY);
-    }}
+    }
+}

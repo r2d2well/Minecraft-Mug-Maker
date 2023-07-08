@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "block/cube_column",
   "textures": {
-    "all": "mug_maker:block/mixer"
+    "end": "mug_maker:block/mixer_bottom_top",
+    "side": "mug_maker:block/mixer"
   }
 }
