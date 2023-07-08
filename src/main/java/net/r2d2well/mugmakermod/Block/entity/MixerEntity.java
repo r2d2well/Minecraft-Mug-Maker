@@ -22,8 +22,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemStackHandler;
 import net.r2d2well.mugmakermod.Item.ModItemsInit;
 import net.r2d2well.mugmakermod.Screen.MixerMenu;
+import net.r2d2well.mugmakermod.recipes.MixerRecipes;
 import org.jetbrains.annotations.Nullable;
 import javax.swing.plaf.basic.BasicComboBoxUI;
+import java.util.ArrayList;
 
 public class MixerEntity extends BlockEntity implements MenuProvider {
     public final ItemStackHandler itemStackHandler = new ItemStackHandler(5){
@@ -66,7 +68,17 @@ public class MixerEntity extends BlockEntity implements MenuProvider {
     }
 
     private static void craftItem(MixerEntity entity) {
-        if (hasWheatInSlot(entity)){
+        for (Item[] recipe: MixerRecipes.getRecipes()) {
+            if (checkRecipe(entity, recipe)){
+                for (int x = 0; x < 4; x++){
+                    entity.itemStackHandler.extractItem(x, 1, false);
+                }
+                entity.itemStackHandler.setStackInSlot(4, new ItemStack(recipe [4],
+                        entity.itemStackHandler.getStackInSlot(4).getCount() + 1));
+            }
+        }
+
+        if (hasItemInSlot(entity, Items.WHEAT)){
             craftCarbonatedWater(entity);
         }
     }
@@ -77,19 +89,37 @@ public class MixerEntity extends BlockEntity implements MenuProvider {
             inventory.setItem(i, entity.itemStackHandler.getStackInSlot(i));
         }
 
-        Item item = ModItemsInit.CARBONATED_WATER.get();
 
-        return hasWheatInSlot(entity) && canInsertAmountIntoOutputSlot(inventory) &&
-                canInsertItemIntoOutputSlot(inventory, new ItemStack(item, 1));
+        for (Item[] recipe: MixerRecipes.getRecipes()) {
+            if (checkRecipe(entity, recipe)){
+                return canInsertAmountIntoOutputSlot(inventory) &&
+                        canInsertItemIntoOutputSlot(inventory, new ItemStack(recipe[4], 1));
+            }
+        }
+
+        if (!canInsertAmountIntoOutputSlot(inventory) ||
+                !canInsertItemIntoOutputSlot(inventory, new ItemStack(Items.WHEAT, 1))){
+            return false;
+        }
+        return hasItemInSlot(entity, Items.WHEAT);
     }
 
-    private static boolean hasWheatInSlot(MixerEntity entity){
+    private static boolean hasItemInSlot(MixerEntity entity, Item item){
         for (int x = 0; x < 4; x++){
-            if (entity.itemStackHandler.getStackInSlot(x).getItem() == Items.WHEAT){
+            if (entity.itemStackHandler.getStackInSlot(x).getItem() == item){
                 return true;
             }
         }
         return false;
+    }
+
+    private static boolean checkRecipe(MixerEntity entity, Item [] recipe){
+        for (int x = 0; x < 4; x++){
+            if (!hasItemInSlot(entity, recipe[x])){
+                return false;
+            }
+        }
+        return true;
     }
 
     private static void craftCarbonatedWater(MixerEntity entity){
@@ -101,6 +131,14 @@ public class MixerEntity extends BlockEntity implements MenuProvider {
                 return;
             }
         }
+    }
+
+    private static void craftRecipe(MixerEntity entity, Item output){
+        for (int x = 0; x < 4; x++){
+            entity.itemStackHandler.extractItem(x, 1, false);
+        }
+        entity.itemStackHandler.setStackInSlot(4, new ItemStack(output,
+                entity.itemStackHandler.getStackInSlot(4).getCount() + 1));
     }
 
     private static boolean canInsertItemIntoOutputSlot(SimpleContainer inventory, ItemStack stack) {
