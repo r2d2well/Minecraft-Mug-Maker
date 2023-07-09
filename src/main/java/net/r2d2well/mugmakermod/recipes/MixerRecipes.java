@@ -41,12 +41,32 @@ public class MixerRecipes {
             ModItemsInit.MUG.get()
     };
 
-    public static ArrayList <Item[]> getRecipes (){
+    private static Item [] CARBONATED_WATER = {
+            Items.WHEAT,
+            Items.WATER_BUCKET,
+            null,
+            null,
+            ModItemsInit.CARBONATED_WATER.get()
+    };
+
+    private static void addRecipes (){
         list = new ArrayList<>();
         list.add(A_W);
         list.add(BARQ);
         list.add(IBC);
         list.add(MUG);
+        list.add(CARBONATED_WATER);
+    }
+
+    public static ArrayList <Item[]> getRecipes (){
+        addRecipes();
         return list;
+    }
+
+    public static void addRecipe(Item [] items){
+        if (items.length != 5){
+            return;
+        }
+        list.add(items);
     }
 }

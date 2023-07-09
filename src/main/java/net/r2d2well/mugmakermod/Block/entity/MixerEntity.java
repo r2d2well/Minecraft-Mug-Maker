@@ -77,10 +77,6 @@ public class MixerEntity extends BlockEntity implements MenuProvider {
                         entity.itemStackHandler.getStackInSlot(4).getCount() + 1));
             }
         }
-
-        if (hasItemInSlot(entity, Items.WHEAT)){
-            craftCarbonatedWater(entity);
-        }
     }
 
     private static boolean hasRecipe(MixerEntity entity) {
@@ -96,12 +92,7 @@ public class MixerEntity extends BlockEntity implements MenuProvider {
                         canInsertItemIntoOutputSlot(inventory, new ItemStack(recipe[4], 1));
             }
         }
-
-        if (!canInsertAmountIntoOutputSlot(inventory) ||
-                !canInsertItemIntoOutputSlot(inventory, new ItemStack(Items.WHEAT, 1))){
-            return false;
-        }
-        return hasItemInSlot(entity, Items.WHEAT);
+        return false;
     }
 
     private static boolean hasItemInSlot(MixerEntity entity, Item item){
@@ -115,30 +106,14 @@ public class MixerEntity extends BlockEntity implements MenuProvider {
 
     private static boolean checkRecipe(MixerEntity entity, Item [] recipe){
         for (int x = 0; x < 4; x++){
+            if (recipe [x] == null){
+                return true;
+            }
             if (!hasItemInSlot(entity, recipe[x])){
                 return false;
             }
         }
         return true;
-    }
-
-    private static void craftCarbonatedWater(MixerEntity entity){
-        for (int x = 0; x < 4; x++){
-            if (entity.itemStackHandler.getStackInSlot(x).getItem() == Items.WHEAT){
-                entity.itemStackHandler.extractItem(x,1, false);
-                entity.itemStackHandler.setStackInSlot(4, new ItemStack(ModItemsInit.CARBONATED_WATER.get(),
-                        entity.itemStackHandler.getStackInSlot(4).getCount() + 1));
-                return;
-            }
-        }
-    }
-
-    private static void craftRecipe(MixerEntity entity, Item output){
-        for (int x = 0; x < 4; x++){
-            entity.itemStackHandler.extractItem(x, 1, false);
-        }
-        entity.itemStackHandler.setStackInSlot(4, new ItemStack(output,
-                entity.itemStackHandler.getStackInSlot(4).getCount() + 1));
     }
 
     private static boolean canInsertItemIntoOutputSlot(SimpleContainer inventory, ItemStack stack) {
